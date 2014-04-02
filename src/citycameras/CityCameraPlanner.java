@@ -14,9 +14,7 @@ package citycameras;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * This class implements the algorithms for planning the city security cameras
@@ -42,6 +40,7 @@ public class CityCameraPlanner
 	{
 		theCity = new HashMap<String, Neighborhood>();
 		
+		//Initialize the graph by using data from given list of roads
 		for (Road road: roads)
 		{
 			String n1 = road.getNeighborhood1();
@@ -63,7 +62,6 @@ public class CityCameraPlanner
 	 */
 	public Collection<String> getCameras()
 	{	
-		// TODO: Implement this method.
 		return Cameras;
 	}
 	
@@ -83,6 +81,7 @@ public class CityCameraPlanner
 	{
 		Collection<Neighborhood> theHood = theCity.values();
 			
+		//Check if n is a cut vertex by removing it from the graph and testing connectivity
 		for (Neighborhood n : theHood)
 		{			
 			resetVisited();
@@ -93,46 +92,6 @@ public class CityCameraPlanner
 			addNeighborhood(n);		
 		}
 	}
-	
-	/**
-	 * @param neighborhood the neighborhood to add
-	 * @return true if added, false if already created
-	 */
-	private boolean addNeighborhood(String neighborhood)
-	{
-		if( !theCity.containsKey( neighborhood ) )
-		{
-			theCity.put( neighborhood , new Neighborhood(neighborhood) );
-			return true;
-		}
-		
-		return false;
-	}
-	
-	
-	/**
-	 * @param start Neighborhood to start depth first search from
-	 */
-	public void depthFirstSearch(String start)
-	{
-		Neighborhood u = theCity.get(start);
-		Collection<Neighborhood> theHood = theCity.values();
-
-		u.visit();
-		for(Neighborhood v : u.neighbors)
-		    if( !v.isVisited() )
-		    	depthFirstSearch(v.getName());
-	}
-	
-	/**
-	 * sets the visited field in each neighborhood to false
-	 */
-	private void resetVisited()
-	{
-		for (Neighborhood n : theCity.values())
-			n.unVisit();
-	}
-	
 	
 	/**
 	 * Tests the graph for connectivity by running dfs and checking if all nodes are visited
@@ -153,6 +112,35 @@ public class CityCameraPlanner
 			
 		}
 			return connected;
+	}
+	
+	/**
+	 * @param start Neighborhood to start depth first search from
+	 */
+	public void depthFirstSearch(String start)
+	{
+		Neighborhood u = theCity.get(start);
+		Collection<Neighborhood> theHood = theCity.values();
+
+		u.visit();
+		for(Neighborhood v : u.neighbors)
+		    if( !v.isVisited() )
+		    	depthFirstSearch(v.getName());
+	}
+	
+	/**
+	 * @param neighborhood the neighborhood to add
+	 * @return true if added, false if already created
+	 */
+	private boolean addNeighborhood(String neighborhood)
+	{
+		if( !theCity.containsKey( neighborhood ) )
+		{
+			theCity.put( neighborhood , new Neighborhood(neighborhood) );
+			return true;
+		}
+		
+		return false;
 	}
 	
 	/**
@@ -177,5 +165,14 @@ public class CityCameraPlanner
 		theCity.put(theNeighborhood.getName(),theNeighborhood);
 		for (Neighborhood n : theNeighborhood.neighbors)
 			n.neighbors.add(theNeighborhood);
+	}
+
+	/**
+	 * sets the visited field in each neighborhood to false
+	 */
+	private void resetVisited()
+	{
+		for (Neighborhood n : theCity.values())
+			n.unVisit();
 	}
 }

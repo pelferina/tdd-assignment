@@ -4,8 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A road is simply a pair of neighborhoods. The road connects these two
- * neighborhoods directly.
+ * A neighborhood is a node with a list of neighboring nodes
  * @version Mar 30, 2014
  * @author rhhayne
  */
@@ -17,8 +16,7 @@ public class Neighborhood
 	
 	/**
 	 * The only constructor.
-	 * @param neighborhood1 one of the neighborhoods that the road connects
-	 * @param neighborhood2 the second road connected by the neighborhoods
+	 * @param name the name of this neighborhood
 	 */
 	public Neighborhood(String name)
 	{
@@ -44,13 +42,13 @@ public class Neighborhood
 		return visited;
 	}
 	
+	public void unVisit() 
+	{
+		this.visited = false;
+	}
+	
 	public String getName() {
 		return name;
-	}
-
-	public boolean isNeighbor(Neighborhood aNeighbor)
-	{
-		return neighbors.contains(aNeighbor);
 	}
 	
 	@Override
@@ -62,10 +60,5 @@ public class Neighborhood
 				+ ((name == null) ? 0 : name.hashCode());
 
 		return result;
-	}
-
-	public void unVisit() {
-		this.visited = false;
-		
 	}
 }
