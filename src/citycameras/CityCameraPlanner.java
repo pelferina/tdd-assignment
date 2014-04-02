@@ -31,7 +31,6 @@ public class CityCameraPlanner
 {
 	private HashMap<String, Neighborhood> theCity;
 	private List<String> Cameras = new ArrayList<String>();
-	int id;
 
 	/**
 	 * The constructor takes a collection of all of the roads in the city that
@@ -42,7 +41,6 @@ public class CityCameraPlanner
 	public CityCameraPlanner(Collection<Road> roads)
 	{
 		theCity = new HashMap<String, Neighborhood>();
-		id = 0;
 		
 		for (Road road: roads)
 		{
@@ -169,22 +167,5 @@ public class CityCameraPlanner
 		theCity.put(theNeighborhood.getName(),theNeighborhood);
 		for (Neighborhood n : theNeighborhood.neighbors)
 			n.neighbors.add(theNeighborhood);
-	}
-	
-	public int getID()
-	{
-		return id++;
-	}
-	
-	public HashMap<String, Neighborhood> getTheCity() {
-		return theCity;
-	}
-
-	public void setTheCity(HashMap<String, Neighborhood> theCity) {
-		this.theCity = theCity;
-	}
-
-	public void setCameras(List<String> cameras) {
-		Cameras = cameras;
 	}
 }
