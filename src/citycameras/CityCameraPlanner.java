@@ -75,6 +75,10 @@ public class CityCameraPlanner
 		return Cameras.contains(neighborhood);
 	}
 	
+	/**
+	 * Generates an array of all cameras in the graph by removing one node from the graph at a time 
+	 * and testing for connectivity with dfs
+	 */
 	private void findCameras()
 	{
 		Collection<Neighborhood> theHood = theCity.values();
@@ -88,10 +92,12 @@ public class CityCameraPlanner
 				Cameras.add(n.getName());
 			addNeighborhood(n);		
 		}
-		
-		System.out.println("Found: "+Cameras.size()+" cameras");
 	}
 	
+	/**
+	 * @param neighborhood the neighborhood to add
+	 * @return true if added, false if already created
+	 */
 	private boolean addNeighborhood(String neighborhood)
 	{
 		if( !theCity.containsKey( neighborhood ) )
@@ -103,20 +109,10 @@ public class CityCameraPlanner
 		return false;
 	}
 	
-//	public void depthFirstSearch(String start)
-//	{
-//		Neighborhood u = theCity.get(start);
-//		Collection<Neighborhood> theHood = theCity.values();
-//		
-//		System.out.println("DFS starting on: "+u.getName());
-//
-//		u.visit();
-//		for(Neighborhood v : u.neighbors)
-//		    if( !v.isVisited() )
-//		    	depthFirstSearch(v.getName());
-//		
-//	}
 	
+	/**
+	 * @param start Neighborhood to start depth first search from
+	 */
 	public void depthFirstSearch(String start)
 	{
 		Neighborhood u = theCity.get(start);
@@ -126,15 +122,21 @@ public class CityCameraPlanner
 		for(Neighborhood v : u.neighbors)
 		    if( !v.isVisited() )
 		    	depthFirstSearch(v.getName());
-		
 	}
 	
+	/**
+	 * sets the visited field in each neighborhood to false
+	 */
 	private void resetVisited()
 	{
 		for (Neighborhood n : theCity.values())
 			n.unVisit();
 	}
 	
+	
+	/**
+	 * Tests the graph for connectivity by running dfs and checking if all nodes are visited
+	 */
 	private boolean isConnected()
 	{
 		boolean connected = true;
@@ -153,6 +155,10 @@ public class CityCameraPlanner
 			return connected;
 	}
 	
+	/**
+	 * Removes given neighborhood from the graph as well as removing itself from its neighbors' neighbor list
+	 * @param theNeighborhood the neighborhood to be removed from the city (Graph)
+	 */
 	private void removeNeighborhood(Neighborhood theNeighborhood)
 	{
 		System.out.println("Removing: "+theNeighborhood.getName());
@@ -162,6 +168,10 @@ public class CityCameraPlanner
 			n.neighbors.remove(theNeighborhood);
 	}
 	
+	/**
+	 * Adds given neighborhood to the graph as well as adding itself to its neighbors' neighbor list
+	 * @param theNeighborhood the neighborhood to be added to the city (Graph)
+	 */
 	private void addNeighborhood(Neighborhood theNeighborhood)
 	{
 		theCity.put(theNeighborhood.getName(),theNeighborhood);
