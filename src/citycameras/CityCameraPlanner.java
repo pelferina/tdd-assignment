@@ -96,10 +96,10 @@ public class CityCameraPlanner
 	/**
 	 * Tests the graph for connectivity by running dfs and checking if all nodes are visited
 	 */
-	private boolean isConnected()
+	public boolean isConnected()
 	{
-		boolean connected = true;
 		Object[] theHood = theCity.values().toArray();
+		resetVisited();
 		depthFirstSearch(((Neighborhood) theHood[0]).getName());
 		
 		for (Neighborhood n : theCity.values())
@@ -107,11 +107,10 @@ public class CityCameraPlanner
 			if ( !n.isVisited() )
 			{	
 				System.out.println(n.getName()+" not connected");
-				connected = false;
-			}
-			
+				return false;
+			}	
 		}
-			return connected;
+		return true;
 	}
 	
 	/**
@@ -147,7 +146,7 @@ public class CityCameraPlanner
 	 * Removes given neighborhood from the graph as well as removing itself from its neighbors' neighbor list
 	 * @param theNeighborhood the neighborhood to be removed from the city (Graph)
 	 */
-	private void removeNeighborhood(Neighborhood theNeighborhood)
+	public void removeNeighborhood(Neighborhood theNeighborhood)
 	{
 		System.out.println("Removing: "+theNeighborhood.getName());
 		
@@ -160,17 +159,21 @@ public class CityCameraPlanner
 	 * Adds given neighborhood to the graph as well as adding itself to its neighbors' neighbor list
 	 * @param theNeighborhood the neighborhood to be added to the city (Graph)
 	 */
-	private void addNeighborhood(Neighborhood theNeighborhood)
+	public void addNeighborhood(Neighborhood theNeighborhood)
 	{
 		theCity.put(theNeighborhood.getName(),theNeighborhood);
 		for (Neighborhood n : theNeighborhood.neighbors)
 			n.neighbors.add(theNeighborhood);
 	}
 
+	public HashMap<String, Neighborhood> getTheCity() {
+		return theCity;
+	}
+
 	/**
 	 * sets the visited field in each neighborhood to false
 	 */
-	private void resetVisited()
+	public void resetVisited()
 	{
 		for (Neighborhood n : theCity.values())
 			n.unVisit();
