@@ -99,17 +99,11 @@ public class CityCameraPlanner
 	public boolean isConnected()
 	{
 		Object[] theHood = theCity.values().toArray();
-		resetVisited();
 		depthFirstSearch(((Neighborhood) theHood[0]).getName());
 		
 		for (Neighborhood n : theCity.values())
-		{
 			if ( !n.isVisited() )
-			{	
-				System.out.println(n.getName()+" not connected");
 				return false;
-			}	
-		}
 		return true;
 	}
 	
@@ -161,7 +155,8 @@ public class CityCameraPlanner
 	 */
 	public void addNeighborhood(Neighborhood theNeighborhood)
 	{
-		theCity.put(theNeighborhood.getName(),theNeighborhood);
+		if( !theCity.containsKey( theNeighborhood ) )
+			theCity.put(theNeighborhood.getName(),theNeighborhood);
 		for (Neighborhood n : theNeighborhood.neighbors)
 			n.neighbors.add(theNeighborhood);
 	}
