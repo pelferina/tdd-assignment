@@ -55,9 +55,26 @@ public class CityCameraPlannerTest
 		System.out.println(cameraPlanner.getCameras());
 		assertEquals(1, cameraPlanner.getCameras().size());
 		assertTrue(cameraPlanner.getCameras().contains("B"));
-		assertTrue(cameraPlanner.hasCamera("B"));
-		assertFalse(cameraPlanner.hasCamera("A"));
 	}
+	
+	@Test
+	public void testExample2()
+	{
+		final Road[] roads = {
+			new Road("A", "B"), new Road("B", "C"), new Road("C", "D"), new Road("D", "E"),
+			new Road("E", "F"), new Road("F", "G"), new Road("F", "C"), new Road("A", "C")
+		};
+		
+		Collection<Road> city = new HashSet<Road>();
+		for (Road r : roads) {
+			city.add(r);
+		}
+		final CityCameraPlanner cameraPlanner = new CityCameraPlanner(city); 
+		assertEquals(2, cameraPlanner.getCameras().size());
+		assertTrue(cameraPlanner.getCameras().contains("C"));
+		assertTrue(cameraPlanner.getCameras().contains("F"));
+	}
+
 
 	@Test
 	public void testTriangle()
