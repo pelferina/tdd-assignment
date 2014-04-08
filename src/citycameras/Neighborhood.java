@@ -4,10 +4,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * A road is simply a pair of neighborhoods. The road connects these two
- * neighborhoods directly.
+ * A neighborhood is simply encapsulating the characteristics of the neighborhood and its connecting neighbors 
  * @version Mar 30, 2014
- * @author rhhayne
+ * @author rhhayne, Ayesha
+ *
  */
 public class Neighborhood
 {
@@ -17,8 +17,7 @@ public class Neighborhood
 	
 	/**
 	 * The only constructor.
-	 * @param neighborhood1 one of the neighborhoods that the road connects
-	 * @param neighborhood2 the second road connected by the neighborhoods
+	 * @param name String 
 	 */
 	public Neighborhood(String name)
 	{
@@ -28,31 +27,54 @@ public class Neighborhood
 
 	/**
 	 * add a neighbor to neighbor set
+	 * @param aNeighbor Neighborhood
 	 */
 	public void addNeighbor(Neighborhood aNeighbor)
 	{
 		neighbors.add(aNeighbor);
 	}
 	
-	public void visit()
+	/**
+	 * sets the visited state of the given neighborhood
+	 * @param visit boolean
+	 */
+	public void setVisited(boolean visit)
 	{
-		visited = true;
+		visited = visit;
 	}
 	
-	public boolean isVisited()
+	/**
+	 * gets the visited state of the given neighborhood
+	 * @return visited boolean
+	 */
+	public boolean getVisited()
 	{
 		return visited;
 	}
 	
+	
+	/**
+	 * gets the name of the given neighborhood
+	 * @return name String
+	 */
 	public String getName() {
 		return name;
 	}
 
+	/**
+	 * checks if a neighbor is connected to the given neighborhood 
+	 * @param aNeighbor Neighborhood
+	 * @return isNeighbor boolean
+	 */
 	public boolean isNeighbor(Neighborhood aNeighbor)
 	{
-		return neighbors.contains(aNeighbor);
+		boolean isNeighbor = neighbors.contains(aNeighbor); 
+		return isNeighbor;
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
 	@Override
 	public int hashCode()
 	{
@@ -62,10 +84,5 @@ public class Neighborhood
 				+ ((name == null) ? 0 : name.hashCode());
 
 		return result;
-	}
-
-	public void unVisit() {
-		this.visited = false;
-		
 	}
 }

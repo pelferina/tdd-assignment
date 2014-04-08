@@ -29,8 +29,16 @@ import java.util.Set;
  */
 public class CityCameraPlanner
 {
-	private HashMap<String, Neighborhood> theCity;
+	/**
+	 * Map of the city of Anatidae with its neighborhoods
+	 */
+	private HashMap<String, Neighborhood> mapOfTheCity;
+	
+	/**
+	 * List of neighborhoods in Anatidae with cameras 
+	 */
 	private List<String> Cameras = new ArrayList<String>();
+	
 	int id;
 
 	/**
@@ -41,31 +49,33 @@ public class CityCameraPlanner
 	 */
 	public CityCameraPlanner(Collection<Road> roads)
 	{
-		theCity = new HashMap<String, Neighborhood>();
+		mapOfTheCity = new HashMap<String, Neighborhood>();
 		id = 0;
 		
 		for (Road road: roads)
 		{
+			//Finds the pair of neighborhoods connected by a road 
 			String n1 = road.getNeighborhood1();
 			String n2 = road.getNeighborhood2();
 			
+			//Adds the neighborhood to the map of the city
 			addNeighborhood(n1);
 			addNeighborhood(n2);
 			
-			theCity.get(n1).addNeighbor(theCity.get(n2));
-			theCity.get(n2).addNeighbor(theCity.get(n1));
+			//Adds the connected neighbors in the map of the city
+			mapOfTheCity.get(n1).addNeighbor(mapOfTheCity.get(n2));
+			mapOfTheCity.get(n2).addNeighbor(mapOfTheCity.get(n1));
 		}
 		
 		findCameras();
-		// TODO: Implement this constructor.
 	}
 	
 	/**
+	 * 
 	 * @return a collection of all neighborhoods containing cameras
 	 */
 	public Collection<String> getCameras()
 	{	
-		// TODO: Implement this method.
 		return Cameras;
 	}
 	
@@ -77,14 +87,18 @@ public class CityCameraPlanner
 		return Cameras.contains(neighborhood);
 	}
 	
+	/**
+	 *  finds the neighborhoods where a camera is needed and populates the list of neighborhoods with cameras
+	 */
 	private void findCameras()
 	{
-		Collection<Neighborhood> theHood = theCity.values();
+		Collection<Neighborhood> theHood = mapOfTheCity.values();
 			
+		//Looks for neighborhoods that are also articulation points in the map
 		for (Neighborhood n : theHood)
 		{			
 			resetVisited();
-			n.visit();
+			n.setVisited(true);
 			removeNeighborhood(n);
 			if ( !isConnected() && !Cameras.contains(n.getName()) )
 				Cameras.add(n.getName());
@@ -94,79 +108,76 @@ public class CityCameraPlanner
 		System.out.println("Found: "+Cameras.size()+" cameras");
 	}
 	
+	/**
+	 * @param neighborhood
+	 * @return true if neighborhood was successfully added
+	 */
 	private boolean addNeighborhood(String neighborhood)
 	{
-		if( !theCity.containsKey( neighborhood ) )
+		if( !mapOfTheCity.containsKey( neighborhood ) )
 		{
-			theCity.put( neighborhood , new Neighborhood(neighborhood) );
+			mapOfTheCity.put( neighborhood , new Neighborhood(neighborhood) );
 			return true;
 		}
 		
 		return false;
 	}
 	
-//	public void depthFirstSearch(String start)
-//	{
-//		Neighborhood u = theCity.get(start);
-//		Collection<Neighborhood> theHood = theCity.values();
-//		
-//		System.out.println("DFS starting on: "+u.getName());
-//
-//		u.visit();
-//		for(Neighborhood v : u.neighbors)
-//		    if( !v.isVisited() )
-//		    	depthFirstSearch(v.getName());
-//		
-//	}
-	
-	public void depthFirstSearch(String start)
+	private void depthFirstSearch(String start)
 	{
-		Neighborhood u = theCity.get(start);
-		Collection<Neighborhood> theHood = theCity.values();
+		Neighborhood u = mapOfTheCity.get(start);
+		Collection<Neighborhood> theHood = mapOfTheCity.values();
 
-		u.visit();
+		u.setVisited(true);
 		for(Neighborhood v : u.neighbors)
-		    if( !v.isVisited() )
+		    if( !v.getVisited() )
 		    	depthFirstSearch(v.getName());
 		
 	}
 	
 	private void resetVisited()
 	{
-		for (Neighborhood n : theCity.values())
-			n.unVisit();
+		for (Neighborhood n : mapOfTheCity.values())
+			n.setVisited(false);
 	}
 	
+	/**
+	 * @return true if the map is still connected after removal of a particular neighborhood
+	 */
 	private boolean isConnected()
 	{
 		boolean connected = true;
-		Object[] theHood = theCity.values().toArray();
+		Object[] theHood = mapOfTheCity.values().toArray();
 		depthFirstSearch(((Neighborhood) theHood[0]).getName());
 		
-		for (Neighborhood n : theCity.values())
+		for (Neighborhood n : mapOfTheCity.values())
 		{
-			if ( !n.isVisited() )
+			if ( !n.getVisited() )
 			{	
 				System.out.println(n.getName()+" not connected");
 				connected = false;
 			}
 			
 		}
-			return connected;
+		return connected;
 	}
 	
 	private void removeNeighborhood(Neighborhood theNeighborhood)
 	{
 		System.out.println("Removing: "+theNeighborhood.getName());
 		
-		theCity.remove(theNeighborhood);
+		mapOfTheCity.remove(theNeighborhood);
 		for (Neighborhood n : theNeighborhood.neighbors)
 			n.neighbors.remove(theNeighborhood);
 	}
 	
+	/**
+	 * adds the neighborhood to the map of the city of Anatidae
+	 * @param theNeighborhood
+	 */
 	private void addNeighborhood(Neighborhood theNeighborhood)
 	{
-		theCity.put(theNeighborhood.getName(),theNeighborhood);
+		mapOfTheCity.put(theNeighborhood.getName(),theNeighborhood);
 		for (Neighborhood n : theNeighborhood.neighbors)
 			n.neighbors.add(theNeighborhood);
 	}
@@ -176,12 +187,20 @@ public class CityCameraPlanner
 		return id++;
 	}
 	
+	/**
+	 * gets the Map of the given city 
+	 * @return theCity Map of the city of Anatidae
+	 */
 	public HashMap<String, Neighborhood> getTheCity() {
-		return theCity;
+		return mapOfTheCity;
 	}
 
+	/**
+	 * sets the Map to the given city
+	 * @param theCity Map of the city of Anatidae 
+	 */
 	public void setTheCity(HashMap<String, Neighborhood> theCity) {
-		this.theCity = theCity;
+		this.mapOfTheCity = theCity;
 	}
 
 	public void setCameras(List<String> cameras) {

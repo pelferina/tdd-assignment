@@ -15,13 +15,19 @@ import static org.junit.Assert.*;
 import java.util.*;
 import org.junit.Test;
 
+import org.junit.Test;
+
 /**
  * Sample tests for the TDD assignment in CS3733.
  * @version Mar 30, 2014
- * @author gpollice
+ * @author Rafi Hayne, Ayesha Fathima
+ *
  */
 public class CityCameraPlannerTest
 {
+	/**
+	 * tests the camera locations for neighborhoods connected in a straight line
+	 */
 	@Test
 	public void testStraightLineOfThree()
 	{
@@ -40,6 +46,10 @@ public class CityCameraPlannerTest
 		assertFalse(cameraPlanner.hasCamera("A"));
 	}
 	
+	
+	/**
+	 * 
+	 */
 	@Test
 	public void testExample1()
 	{
@@ -57,6 +67,9 @@ public class CityCameraPlannerTest
 		assertTrue(cameraPlanner.getCameras().contains("B"));
 	}
 	
+	/**
+	 * 
+	 */
 	@Test
 	public void testExample2()
 	{
@@ -76,6 +89,9 @@ public class CityCameraPlannerTest
 	}
 
 
+	/**
+	 * tests the camera locations for neighborhoods bi-connected in a triangle
+	 */
 	@Test
 	public void testTriangle()
 	{
@@ -91,4 +107,73 @@ public class CityCameraPlannerTest
 			assertEquals(0, cameraPlanner.getCameras().size());
 			assertFalse(cameraPlanner.getCameras().contains("B"));
 	}
+	
+	/**
+	 * tests the camera locations for neighborhoods bi-connected in a triangle and a square (shape of a house)
+	 */
+	@Test
+	public void testTriangleSquare()
+	{
+		final Road[] roads = {
+			new Road("A", "B"), new Road("B", "C"), new Road("A", "C"), 
+			new Road("B", "E"), new Road("E","D"), new Road("D","C")	
+		};
+		
+		Collection<Road> city = new HashSet<Road>();
+		for (Road r : roads) {
+			city.add(r);
+		}
+		final CityCameraPlanner cameraPlanner = new CityCameraPlanner(city); 
+		assertEquals(0, cameraPlanner.getCameras().size());
+		assertFalse(cameraPlanner.getCameras().contains("B"));	
+	}
+	
+	/**
+	 * tests the location of a camera in a neighborhood connecting two subgraphs without bridges
+	 */
+	@Test
+	public void testTwoSubNeighborhoodsWithoutBridges()
+	{
+		final Road[] roads = {
+			new Road("A", "B"), new Road("B", "C"), new Road("A", "C"), 
+			new Road("A", "D"), new Road("E","D"), new Road("E","F"), 
+			new Road("A", "F"), new Road("A","G")
+		};
+		
+		Collection<Road> city = new HashSet<Road>();
+		for (Road r : roads) {
+			city.add(r);
+		}
+		final CityCameraPlanner cameraPlanner = new CityCameraPlanner(city); 
+		assertEquals(1, cameraPlanner.getCameras().size());
+		assertFalse(cameraPlanner.getCameras().contains("B"));
+		assertTrue(cameraPlanner.getCameras().contains("A"));
+	}
+	
+	/**
+	 * tests the locations of cameras in neighborhoods connecting two subgraphs with off-shooting neighborhoods (bridges) 
+	 */
+	@Test
+	public void testTwoSubNeighborhoodsWithTwoBridgesInTheSubNeighborhoods()
+	{
+		final Road[] roads = {
+			new Road("A", "B"), new Road("B", "C"), new Road("C", "D"), 
+			new Road("D", "F"), new Road("F","I"), new Road("I","K"), 
+			new Road("D", "I"), new Road("C","K"), new Road("B","H"), 
+			new Road("A", "H"), new Road("A", "E"), new Road("K","G"),
+			new Road("C", "A")
+		};
+		
+		Collection<Road> city = new HashSet<Road>();
+		for (Road r : roads) {
+			city.add(r);
+		}
+		final CityCameraPlanner cameraPlanner = new CityCameraPlanner(city); 
+		assertEquals(3, cameraPlanner.getCameras().size());
+		assertFalse(cameraPlanner.getCameras().contains("E"));
+		assertFalse(cameraPlanner.getCameras().contains("D"));
+		assertTrue(cameraPlanner.getCameras().contains("C"));
+		assertTrue(cameraPlanner.getCameras().contains("K"));
+		assertTrue(cameraPlanner.getCameras().contains("A"));
+	}	
 }
